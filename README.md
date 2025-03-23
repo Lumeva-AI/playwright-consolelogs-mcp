@@ -1,5 +1,7 @@
 # Browser Monitoring MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@Lumeva-AI/playwright-consolelogs-mcp)](https://smithery.ai/server/@Lumeva-AI/playwright-consolelogs-mcp)
+
 This MCP (Model Context Protocol) server uses Playwright to open a browser, monitor console logs, and track network requests. It exposes these capabilities as tools that can be used by MCP clients.
 
 ## Features

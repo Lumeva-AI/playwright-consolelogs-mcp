@@ -15,63 +15,32 @@ This MCP (Model Context Protocol) server uses Playwright to open a browser, moni
 - Playwright
 - Model Context Protocol (MCP) Python SDK
 
-## Installation
+## Installation in claude
 
-1. Create a virtual environment:
-   ```
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+Edit the file:
+`~/Library/Application\ Support/Claude/claude_desktop_config.json`
 
-2. Install the dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+Add this:
 
-3. Install Playwright browsers:
-   ```
-   playwright install
-   ```
+```json
+"playwright": {
+   "command": "/Users/christophersettles/.local/bin/uv",
+   "args": [
+      "--directory",
+      "/ABSOLUTE/PATH/TO/playwrightdebugger/",
+      "run",
+      "mcp_playwright.py"
+   ]
+}
+```
 
-## Usage
+(Replace `/ABSOLUTE/PATH/TO/playwrightdebugger/` with the absolute path to the directory where you cloned the repository)
 
-1. Start the MCP server:
-   ```
-   python playwright.py
-   ```
+## Commands
 
-2. Connect to the server using an MCP client (like Claude Desktop, Continue, etc.)
+Open localhost:3000/dashboard and look at console logs and network requests
 
-3. Use the following tools:
-
-   - `open_browser(url)`: Open a browser at the specified URL
-   - `get_console_logs()`: Get all console logs from the current page
-   - `get_network_requests()`: Get all network requests from the current page
-   - `close_browser()`: Close the browser and clean up resources
-
-## Example
-
-Using Claude Desktop or another MCP client, you can:
-
-1. Open a website:
-   ```
-   I'll use the open_browser tool to navigate to example.com
-   ```
-
-2. Retrieve console logs:
-   ```
-   Can you show me the console logs from the page?
-   ```
-
-3. Analyze network requests:
-   ```
-   What network requests were made when loading the page?
-   ```
-
-4. Close the browser when done:
-   ```
-   Please close the browser now
-   ```
+Close the browser
 
 ## How It Works
 

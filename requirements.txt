@@ -1,0 +1,2 @@
+modelcontextprotocol>=1.2.1
+playwright>=1.40.0

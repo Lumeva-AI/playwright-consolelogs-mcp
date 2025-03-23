@@ -81,8 +81,6 @@ class PlaywrightBrowserManager:
         await self.page.goto(url, wait_until="networkidle")
         
         # Add a message to let the user know the browser will stay open
-        print(f"Browser opened at {url} - The window will stay open for you to interact with it.", flush=True)
-        print("Use the 'close_browser' tool when you're done.", flush=True)
         
         return f"Opened {url} successfully. The browser window will remain open for you to interact with."
 

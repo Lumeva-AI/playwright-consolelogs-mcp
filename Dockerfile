@@ -11,6 +11,21 @@ RUN apt-get update \
         libxi6 \
         libxrender1 \
         libxrandr2 \
+        libatk1.0-0 \
+        libatk-bridge2.0-0 \
+        libcups2 \
+        libdbus-1-3 \
+        libxcomposite1 \
+        libxdamage1 \
+        libxfixes3 \
+        libxkbcommon0 \
+        libgtk-3-0 \
+        libpango-1.0-0 \
+        libcairo2 \
+        libatspi2.0-0 \
+        libx11-xcb1 \
+        libxcursor1 \
+        libxss1 \
         wget \
         ca-certificates \
         fonts-liberation \

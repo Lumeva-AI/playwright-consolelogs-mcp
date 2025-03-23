@@ -22,17 +22,27 @@ class PlaywrightBrowserManager:
         self.network_requests = []
         self.is_initialized = False
 
-    async def initialize(self) -> None:
-        """Initialize the Playwright browser if not already initialized."""
+    async def initialize(self, headless=False) -> None:
+        """Initialize the Playwright browser if not already initialized.
+        
+        Args:
+            headless: Whether to run the browser in headless mode
+        """
         if self.is_initialized:
-            return
+            # If already initialized but with different headless setting,
+            # close the current browser and reinitialize
+            if hasattr(self, '_headless') and self._headless != headless:
+                await self.close()
+            else:
+                return
             
         # Import here to avoid module import issues
         import asyncio
         from playwright.async_api import async_playwright
 
         self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch(headless=False)
+        self.browser = await self.playwright.chromium.launch(headless=headless)
+        self._headless = headless
         self.is_initialized = True
 
     async def close(self) -> None:
@@ -53,11 +63,15 @@ class PlaywrightBrowserManager:
         self.console_logs = []
         self.network_requests = []
 
-    async def open_url(self, url: str) -> str:
+    async def open_url(self, url: str, headless=False) -> str:
         """Open a URL in the browser and start monitoring console and network.
-        The browser will stay open for user interaction."""
-        if not self.is_initialized:
-            await self.initialize()
+        
+        Args:
+            url: The URL to open in the browser
+            headless: Whether to run the browser in headless mode
+        """
+        if not self.is_initialized or hasattr(self, '_headless') and self._headless != headless:
+            await self.initialize(headless=headless)
             
         # Close existing page if any
         if self.page:
@@ -80,11 +94,15 @@ class PlaywrightBrowserManager:
         # Navigate to the URL
         await self.page.goto(url, wait_until="networkidle")
         
-        # Add a message to let the user know the browser will stay open
-        print(f"Browser opened at {url} - The window will stay open for you to interact with it.", flush=True)
-        print("Use the 'close_browser' tool when you're done.", flush=True)
+        # Add a message to let the user know the browser status
+        if headless:
+            print(f"Browser opened at {url} in headless mode - monitoring console logs and network requests.", flush=True)
+        else:
+            print(f"Browser opened at {url} - The window will stay open for you to interact with it.", flush=True)
+            print("Use the 'close_browser' tool when you're done.", flush=True)
         
-        return f"Opened {url} successfully. The browser window will remain open for you to interact with."
+        mode_msg = "headless mode" if headless else "visible mode"
+        return f"Opened {url} successfully in {mode_msg}. {'' if headless else 'The browser window will remain open for you to interact with.'}"
 
     def _handle_console_message(self, message) -> None:
         """Handle console messages from the page."""
@@ -137,16 +155,17 @@ browser_manager = PlaywrightBrowserManager()
 
 # Define MCP tools
 @mcp.tool()
-async def open_browser(url: str) -> str:
+async def open_browser(url: str, headless: bool = False) -> str:
     """Open a browser at the specified URL and start monitoring console logs and network requests.
     
     Args:
         url: The URL to open in the browser
+        headless: Whether to run the browser in headless mode (default: False)
         
     Returns:
         A confirmation message
     """
-    return await browser_manager.open_url(url)
+    return await browser_manager.open_url(url, headless=headless)
 
 @mcp.tool()
 async def get_console_logs() -> List[Dict]:

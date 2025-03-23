@@ -28,7 +28,9 @@ class PlaywrightBrowserManager:
             return
             
         # Import here to avoid module import issues
+        import asyncio
         from playwright.async_api import async_playwright
+
         self.playwright = await async_playwright().start()
         self.browser = await self.playwright.chromium.launch(headless=False)
         self.is_initialized = True
@@ -52,7 +54,8 @@ class PlaywrightBrowserManager:
         self.network_requests = []
 
     async def open_url(self, url: str) -> str:
-        """Open a URL in the browser and start monitoring console and network."""
+        """Open a URL in the browser and start monitoring console and network.
+        The browser will stay open for user interaction."""
         if not self.is_initialized:
             await self.initialize()
             
@@ -65,7 +68,7 @@ class PlaywrightBrowserManager:
         self.network_requests = []
         
         # Create a new page
-        self.page = await self.browser.new_page(headless=False)
+        self.page = await self.browser.new_page()
         
         # Set up console log listener
         self.page.on("console", self._handle_console_message)
@@ -77,7 +80,11 @@ class PlaywrightBrowserManager:
         # Navigate to the URL
         await self.page.goto(url, wait_until="networkidle")
         
-        return f"Opened {url} successfully"
+        # Add a message to let the user know the browser will stay open
+        print(f"Browser opened at {url} - The window will stay open for you to interact with it.", flush=True)
+        print("Use the 'close_browser' tool when you're done.", flush=True)
+        
+        return f"Opened {url} successfully. The browser window will remain open for you to interact with."
 
     def _handle_console_message(self, message) -> None:
         """Handle console messages from the page."""

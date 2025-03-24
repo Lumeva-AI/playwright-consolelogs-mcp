@@ -14,13 +14,14 @@ from mcp.server.fastmcp import FastMCP
 # playwright install
 
 class PlaywrightBrowserManager:
-    def __init__(self):
+    def __init__(self, headless: bool = False):
         self.playwright = None
         self.browser = None
         self.page = None
         self.console_logs = []
         self.network_requests = []
         self.is_initialized = False
+        self.headless = headless
 
     async def initialize(self) -> None:
         """Initialize the Playwright browser if not already initialized."""
@@ -32,7 +33,10 @@ class PlaywrightBrowserManager:
         from playwright.async_api import async_playwright
 
         self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch(headless=False)
+        launch_options = {}
+        if self.headless:
+            launch_options["headless"] = True
+        self.browser = await self.playwright.chromium.launch(**launch_options)
         self.is_initialized = True
 
     async def close(self) -> None:
@@ -195,10 +199,10 @@ class PlaywrightBrowserManager:
         return limited_requests
 
 # Create the MCP server
-mcp = FastMCP("browser-monitor")
+mcp = FastMCP("browser-monitor", headless=True)
 
 # Create a browser manager instance
-browser_manager = PlaywrightBrowserManager()
+browser_manager = PlaywrightBrowserManager(headless=mcp.headless)
 
 # Define MCP tools
 @mcp.tool()

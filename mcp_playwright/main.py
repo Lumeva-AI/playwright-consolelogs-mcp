@@ -250,7 +250,10 @@ async def close_browser() -> str:
     await browser_manager.close()
     return "Browser closed successfully"
 
+def main():
+    mcp.run()
+
 # Run the server when the script is executed directly
 if __name__ == "__main__":
     # This will automatically handle the server lifecycle and run it
-    mcp.run()
+    main()

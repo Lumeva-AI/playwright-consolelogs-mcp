@@ -26,6 +26,8 @@ RUN apt-get update \
         libx11-xcb1 \
         libxcursor1 \
         libxss1 \
+        libgbm1 \
+        libasound2 \
         wget \
         ca-certificates \
         fonts-liberation \

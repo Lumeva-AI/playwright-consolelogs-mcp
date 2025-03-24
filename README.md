@@ -1,4 +1,4 @@
-# Browser Monitoring MCP Server
+# Console and Network Logs Playwright MCP Server
 
 [![smithery badge](https://smithery.ai/badge/@Lumeva-AI/playwright-consolelogs-mcp)](https://smithery.ai/server/@Lumeva-AI/playwright-consolelogs-mcp)
 

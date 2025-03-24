@@ -57,11 +57,11 @@ class PlaywrightBrowserManager:
         self.console_logs = []
         self.network_requests = []
 
-    async def open_url(self, url: str) -> str:
+    async def open_url(self, url: str, headless: bool = False) -> str:
         """Open a URL in the browser and start monitoring console and network.
         The browser will stay open for user interaction."""
         if not self.is_initialized:
-            await self.initialize()
+            await self.initialize(headless=headless)
             
         # Close existing page if any
         if self.page:
@@ -199,23 +199,24 @@ class PlaywrightBrowserManager:
         return limited_requests
 
 # Create the MCP server
-mcp = FastMCP("browser-monitor", headless=True)
+mcp = FastMCP("browser-monitor")
 
 # Create a browser manager instance
-browser_manager = PlaywrightBrowserManager(headless=mcp.headless)
+browser_manager = PlaywrightBrowserManager()
 
 # Define MCP tools
 @mcp.tool()
-async def open_browser(url: str) -> str:
+async def open_browser(url: str, headless: bool = False) -> str:
     """Open a browser at the specified URL and start monitoring console logs and network requests.
     
     Args:
-        url: The URL to open in the browser
+        url: String, the URL to open in the browser
+        headless: Boolean, whether to run the browser in headless mode
         
     Returns:
         A confirmation message
     """
-    return await browser_manager.open_url(url)
+    return await browser_manager.open_url(url, headless=headless)
 
 @mcp.tool()
 async def get_console_logs(last_n: int) -> List[Dict]:

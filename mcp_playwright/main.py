@@ -14,17 +14,17 @@ from mcp.server.fastmcp import FastMCP
 # playwright install
 
 class PlaywrightBrowserManager:
-    def __init__(self, headless: bool = False):
+    def __init__(self):
         self.playwright = None
         self.browser = None
         self.page = None
         self.console_logs = []
         self.network_requests = []
         self.is_initialized = False
-        self.headless = headless
 
-    async def initialize(self) -> None:
+    async def initialize(self, headless: bool = False) -> None:
         """Initialize the Playwright browser if not already initialized."""
+        self.headless = headless
         if self.is_initialized:
             return
             
